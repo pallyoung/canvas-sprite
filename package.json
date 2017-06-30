@@ -1,0 +1,35 @@
+{
+  "name": "canvas-sprite",
+  "version": "0.0.1",
+  "description": "canvas sprite",
+  "main": "index.js",
+  "scripts": {
+    "dev": "./node_modules/.bin/webpack-dev-server --env=dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pallyoung/canvas-sprite.git"
+  },
+  "keywords": [
+    "canvas",
+    "html",
+    "js",
+    "animation"
+  ],
+  "author": "Spencer Ye",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pallyoung/canvas-sprite/issues"
+  },
+  "homepage": "https://github.com/pallyoung/canvas-sprite#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "ts-loader": "^2.2.1",
+    "typescript": "^2.4.1",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
+  }
+}
