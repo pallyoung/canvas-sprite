@@ -32,10 +32,13 @@ export class View extends EventEmitter implements IView {
         canvasContext.fillStyle = this.backgroundColor;
         canvasContext.fillRect(0, 0, this.width, this.height);
         var self = this;
-        this._children.forEach(function(child){
+        this._children.forEach(function (child) {
             canvasContext.save();
-            canvasContext.rect(child.x,child.y,child.width,child.height);
+            canvasContext.strokeStyle = 'transparent'
+            canvasContext.rect(child.x, child.y, child.width, child.height);
+            canvasContext.stroke();
             canvasContext.clip();
+            canvasContext.translate(child.x,child.y);
             child.onDraw(canvasContext);
             canvasContext.restore();
         });

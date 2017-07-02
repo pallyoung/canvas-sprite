@@ -11,7 +11,23 @@
     <canvas id = 'canvas' height="600" width="375"></canvas>
     <script>
         var sprite = new CanvasSprite.Sprite(document.getElementById('canvas'));
-        sprite.addChild( new CanvasSprite.View())
+        var red = new CanvasSprite.View();
+        red.backgroundColor = 'red';
+        var blue = new CanvasSprite.View();
+        blue.backgroundColor = 'blue';
+        blue.height = 100;
+        blue.width = 200;
+        blue.x = 100;
+        blue.y = 100;
+        var black = new CanvasSprite.View();
+        black.backgroundColor = 'black';
+        black.height = 50;
+        black.width = 50;
+        black.x = 50;
+        black.y = 50;
+        blue.addChild(black);
+        sprite.addChild( red)
+        sprite.addChild( blue)
         sprite.run();
     </script>
 </body>
