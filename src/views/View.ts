@@ -48,16 +48,21 @@ export class View extends EventEmitter implements IView, IEventDispatcherDelegat
             canvasContext.restore();
         });
     }
-    dispatchTouchEvent(event) {
+    dispatchEvent(event) {
         if (this._children.length > 0) {
             this._children.forEach(function (child: View) {
-                child.dispatchTouchEvent(event);
+                child.dispatchEvent(event);
             })
         }else{
-            this.emit(event.type,event);
+            this.dispatchPropagationEvent(event);
         }
 
         return false;
+    }
+    dispatchPropagationEvent(event){
+        event.target = this;
+        this.emit(event.type,event);
+        
     }
     addChild(child: IView): void {
         child.parent = this;

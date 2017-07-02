@@ -9,9 +9,13 @@ export class Subscription {
         this.vendor = [];
     }
     emit(event:Event): void {
-        this.vendor.forEach(function (subscriber: Subscriber) {
+        for(let i = 0,l = this.vendor.length,vendor = this.vendor,subscriber;i<l;i++){
+            subscriber = vendor[i];
             subscriber.listener.call(subscriber.context, event);
-        });
+            if(event.isStopImmediate){
+                return;
+            }
+        }
     }
     addListener(listener: (event:Event) => any, context: any): void {
         var subscriber:Subscriber = new Subscriber(this.type, listener, context);
