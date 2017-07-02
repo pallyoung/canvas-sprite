@@ -1,8 +1,10 @@
 'use strict'
-import View from './View';
-import Sprite from './../Sprite';
+import {View} from './View';
 class Text extends View{
-    constructor(sprite:Sprite){
-        super(sprite);
+    constructor(){
+        super();
+    }
+    onDraw():void{
+
     }
 }
