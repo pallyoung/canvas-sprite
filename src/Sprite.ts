@@ -1,18 +1,37 @@
 'use script'
-import { IView } from './view/IView';
+import { View } from './views/View';
 import { ISprite } from './ISprite';
-import {EventEmitter} from './eventEmitter/EventEmitter';
-export class Sprite implements ISprite {
+import {EventEmitter} from './event/EventEmitter';
+export class Sprite extends View {
     canvasContext: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
-    view: IView;
-    height:number;
-    width:number;
-    constructor(canvas: HTMLCanvasElement, view) {
+    private animationFrameHandle:number;
+    isRunning:boolean;
+    constructor(canvas: HTMLCanvasElement) {
+        super();
         this.canvas = canvas;
-        this.canvasContext = canvas.getContext('2d')
+        this.height = canvas.height;
+        this.width = canvas.width;
+        this.canvasContext = canvas.getContext('2d');
     }
-    run() {
+    layout():void{
 
+    }
+    private draw():void{
+        
+    }
+    private measure():void{
+
+    }
+    run():void{
+        this.isRunning = true;
+        var self = this;
+        this.animationFrameHandle = requestAnimationFrame(function(){
+            self.onDraw(self.canvasContext);
+        });
+    }
+    stop():void{
+        this.isRunning = false;
+        cancelAnimationFrame(this.animationFrameHandle);
     }
 }

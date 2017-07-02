@@ -1,7 +1,7 @@
-/// <reference path="./Event.ts" />
-
 'use strict'
 import {Subscription} from './Subscription';
+import {Event} from './Event';
+
 export class EventEmitter {
     private subscriptions: object;
     constructor() {

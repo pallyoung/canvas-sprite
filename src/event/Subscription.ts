@@ -1,6 +1,6 @@
 'use strict'
 import {Subscriber} from './Subscriber';
-
+import {Event} from './Event';
 export class Subscription {
     private type: string;
     private vendor: Array<Subscriber>;
@@ -14,7 +14,7 @@ export class Subscription {
         });
     }
     addListener(listener: (event:Event) => any, context: any): void {
-        var subscriber:Subscriber = new Subscriber(this.type, listener, context, this);
+        var subscriber:Subscriber = new Subscriber(this.type, listener, context);
         this.vendor.push(subscriber);
     }
     removeListener(listener: (event:Event) => any, context: any): void {

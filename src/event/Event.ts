@@ -1,5 +1,5 @@
 'use strict'
-export class Event {
+export class Event{
     type: string;
     target: any;
     timeStamp: number;
