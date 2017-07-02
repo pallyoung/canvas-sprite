@@ -1,7 +1,8 @@
 'use strict'
 import { EventEmitter } from './../event/EventEmitter';
 import { IView } from './IView';
-export class View extends EventEmitter implements IView {
+import { IEventDispatcherDelegate } from './../event/IEventDispatcherDelegate';
+export class View extends EventEmitter implements IView, IEventDispatcherDelegate {
     height: number;
     width: number;
     x: number;
@@ -42,10 +43,21 @@ export class View extends EventEmitter implements IView {
             canvasContext.stroke();
             canvasContext.closePath();
             canvasContext.clip();
-            canvasContext.translate(child.x,child.y);
+            canvasContext.translate(child.x, child.y);
             child.onDraw(canvasContext);
             canvasContext.restore();
         });
+    }
+    dispatchTouchEvent(event) {
+        if (this._children.length > 0) {
+            this._children.forEach(function (child: View) {
+                child.dispatchTouchEvent(event);
+            })
+        }else{
+            this.emit(event.type,event);
+        }
+
+        return false;
     }
     addChild(child: IView): void {
         child.parent = this;
