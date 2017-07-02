@@ -1,13 +1,13 @@
-'use strict'
-/// <reference path="index.ts" />
+/// <reference path="./Event.ts" />
 
-import Subscription from './Subscription';
-class EventEmitter {
+'use strict'
+import {Subscription} from './Subscription';
+export class EventEmitter {
     private subscriptions: object;
     constructor() {
         this.subscriptions = {};
     }
-    emit(type: string, event: Event): void {
+    emit(type: string, event:Event): void {
         this.subscriptions[type].emit(event);
     }
     addEventListener(type: string, listener: () => any, context: any): void {
@@ -19,4 +19,3 @@ class EventEmitter {
         this.subscriptions[type].removeListener(listener);
     }
 }
-export default EventEmitter;

@@ -1,7 +1,7 @@
 'use strict'
-import Subscriber from './Subscriber';
-import Event from './Event';
-class Subscription {
+import {Subscriber} from './Subscriber';
+
+export class Subscription {
     private type: string;
     private vendor: Array<Subscriber>;
     constructor(type: string) {
@@ -14,7 +14,7 @@ class Subscription {
         });
     }
     addListener(listener: (event:Event) => any, context: any): void {
-        var subscriber: Subscriber = new Subscriber(this.type, listener, context, this);
+        var subscriber:Subscriber = new Subscriber(this.type, listener, context, this);
         this.vendor.push(subscriber);
     }
     removeListener(listener: (event:Event) => any, context: any): void {
@@ -27,4 +27,3 @@ class Subscription {
         }
     }
 }
-export  default Subscription;

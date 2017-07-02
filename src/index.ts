@@ -1,7 +1,7 @@
 'use strict'
 
 import Sprite from './Sprite';
-import View from './View/View';
+import View from './view/View';
 export {
     Sprite,
     View

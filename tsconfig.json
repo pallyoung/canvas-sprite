@@ -1,17 +1,15 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "declarationDir":"./typings",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "module": "commonjs",
+       // "declarationDir":"./typings",
+        // "experimentalDecorators": true,
+        "module": "amd",
         "moduleResolution": "node",
-        "strictNullChecks": true,
-        //"types": ["canvassprite"],
+        // "strictNullChecks": true,
+        //"types": ["./CanvasSprite.d.ts"],
         //"typeRoots":["./types"],
         "baseUrl":".",
-        "rootDir": ".",
-        "charset":"utf-8",
+        "rootDir": "./src",
         "target": "es5",
         "lib": [
             "es6",
@@ -19,10 +17,14 @@
             "es2015.promise"
         ],
         "outDir": "./dist"
+        //"outFile":"canvas-sprite.js"
     },
-    "include": [
-        "src/**/*"
+    "files": [
+        "src/index.ts"        
     ],
+    // "include": [
+    //     "src/**/*"
+    // ],
     "exclude": [
         "node_modules"
     ]

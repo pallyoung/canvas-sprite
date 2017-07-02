@@ -1,4 +1,4 @@
-declare namespace EventEmitter{
+declare namespace eventEmitter{
     export interface Subscription {
         emit(event: Event): void;
         addListener(listener: (eventSpriteEvent) => any, context: any): void;
@@ -25,8 +25,8 @@ declare namespace EventEmitter{
         removeEventListener(type: string, listener: () => any, context: any): void;
     }
 }
-declare namespace CanvasSprite {
-    export interface View extends EventEmitter.EventEmitter {
+declare namespace canvassprite {
+    export interface View extends eventEmitter.EventEmitter {
         height: number;
         width: number;
         x: number;
