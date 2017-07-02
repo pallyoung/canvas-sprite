@@ -8,5 +8,5 @@ export interface IView{
     removeChild(child:IView):void;
     onLayout():void;
     onMeasure():void;
-    onDraw(canvas:HTMLCanvasElement):void;
+    onDraw(canvas:CanvasRenderingContext2D):void;
 }

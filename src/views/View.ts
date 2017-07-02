@@ -1,6 +1,6 @@
 'use strict'
 import {EventEmitter} from './../EventEmitter/EventEmitter';
-import Sprite from './../Sprite';
+import {Sprite} from './../Sprite';
 class View extends EventEmitter{
     height:number;
     width:number;
