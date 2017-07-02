@@ -29,14 +29,18 @@ export class View extends EventEmitter implements IView {
 
     }
     onDraw(canvasContext: CanvasRenderingContext2D): void {
+        canvasContext.beginPath();
         canvasContext.fillStyle = this.backgroundColor;
         canvasContext.fillRect(0, 0, this.width, this.height);
+        canvasContext.closePath();
         var self = this;
         this._children.forEach(function (child) {
             canvasContext.save();
             canvasContext.strokeStyle = 'transparent'
+            canvasContext.beginPath();
             canvasContext.rect(child.x, child.y, child.width, child.height);
             canvasContext.stroke();
+            canvasContext.closePath();
             canvasContext.clip();
             canvasContext.translate(child.x,child.y);
             child.onDraw(canvasContext);
