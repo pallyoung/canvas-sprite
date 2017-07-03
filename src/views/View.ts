@@ -70,25 +70,21 @@ export class View extends EventEmitter implements IView {
             if (child.pageX < pageX &&
                 (child.pageX + child.width) > pageX &&
                 child.pageY < pageY &&
-                (child.pageY + child.pageY)>pageY) {
-                    child.dispatchTouchEvent(event);
-                    handle =true;
-                    return false;
-            }
-        }
-        if(handle==false){
-            event.target = this;
-            this.emit(event.type,event);
-            if(event.isStopImmediate){
+                (child.pageY + child.pageY) > pageY) {
+                child.dispatchTouchEvent(event);
+                handle = true;
                 return false;
             }
+        }
+        if (handle == false) {
             this.dispatchPropagationEvent(event);
-
         }
         return false;
     }
     dispatchPropagationEvent(event: Event) {
-        if(this.parent!=this){
+        event.target = this;
+        this.emit(event.type, event);
+        if (this.parent != this && event.isPropagation) {
             this.parent.dispatchPropagationEvent(event)
         }
     }
