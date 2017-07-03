@@ -7,7 +7,7 @@ var TOUCH_START = IS_TOUCH_ENABLE?'touchstart':'mousedown';
 var TOUCH_MOVE = IS_TOUCH_ENABLE?'touchmove':'mousemove';
 var TOUCH_END= IS_TOUCH_ENABLE?'touchend':'mouseup';
 var CLICK = 'click';
-export class EventDispatcher {
+export class NativeEventDispatcher {
     private node:HTMLElement;
     private delegate:IEventDispatcherDelegate;
     private onTouchStart:(event)=>void;
@@ -18,6 +18,7 @@ export class EventDispatcher {
     init(node:HTMLElement,delegate:IEventDispatcherDelegate):void{
         this.node = node;
         this.delegate = delegate;
+        this.bindNativeEvent();
         
     }
     private bindNativeEvent(){
@@ -41,7 +42,7 @@ export class EventDispatcher {
                 event.changedTouches = [point];
                 event.targetTouches = [point];
             }
-            self.delegate.dispatchEvent(event);
+            self.delegate.dispatchTouchEvent(event);
         }
 
         this.node.addEventListener(TOUCH_START,this.onTouchStart,false);

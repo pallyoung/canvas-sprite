@@ -1,5 +1,5 @@
 import {Event} from './Event';
-type TouchPoint  = {
+export type TouchPoint  = {
     clientX:number;
     clientY:number;
     screenX:number;

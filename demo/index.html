@@ -8,7 +8,13 @@
     <script src = './index.bundle.js'></script>
 </head>
 <body>
-    <canvas id = 'canvas' height="600" width="375"></canvas>
+    <div style="height:1000px"> </div>
+    <div style="height:1000px;">
+            <div style="height:100px"></div>
+            <p style = "margin:100px 100px">
+                <canvas id = 'canvas' height="600" width="300" style = "margin:auto"></canvas>
+            </p>
+    </div>
     <script>
         var sprite = new CanvasSprite.Sprite(document.getElementById('canvas'));
         var red = new CanvasSprite.View();
