@@ -7,7 +7,6 @@ export interface IView extends IEventDispatcherDelegate{
     y:number;
     pageX:number;
     pageY:number;
-    _children:Array<IView>;
     parent:IView;
     addChild(child:IView):void;
     removeChild(child:IView):void;
@@ -15,4 +14,6 @@ export interface IView extends IEventDispatcherDelegate{
     onLayout():void;
     onMeasure():void;
     onDraw(canvasContext:CanvasRenderingContext2D):void;
+    rotate(xyz:number,y?:number,z?:number):void;
+    scale(xyz:number,y?:number,z?:number):void;
 }

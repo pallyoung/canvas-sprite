@@ -10,9 +10,18 @@ export class View extends EventEmitter implements IView {
     y: number;
     pageX: number;
     pageY: number;
-    _children: Array<IView>;
+    private _children: Array<IView>;
     backgroundColor: string;
     parent: IView;
+    private _scaleX:number;
+    private _scaleY:number;
+    private _scaleZ:number;
+    private _rotateX:number;
+    private _rotateY:number;
+    private _rotateZ:number;
+    private _translateX:number;
+    private _translateY:number;
+    private _translateZ:number;
     constructor() {
         super();
         this._children = [];
@@ -32,8 +41,10 @@ export class View extends EventEmitter implements IView {
         this.drawChildren(canvasContext);
     }
     private layout(): void {
-        this.pageX = this.parent.pageX + this.x;
-        this.pageY = this.parent.pageY + this.y;
+        if (this.parent != null) {
+            this.pageX = this.parent.pageX + this.x;
+            this.pageY = this.parent.pageY + this.y;
+        }
     }
     onLayout(): void {
 
@@ -103,5 +114,11 @@ export class View extends EventEmitter implements IView {
                 return;
             }
         }
+    }
+    scale(xyz:number,y?:number,z?:number):void{
+
+    }
+    rotate(xyz:number,y?:number,z?:number):void{
+
     }
 }
