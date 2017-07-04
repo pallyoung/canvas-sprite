@@ -14,15 +14,15 @@ export class View extends EventEmitter implements IView {
     backgroundColor: string;
     parent: IView;
     touchEnabled:boolean;
-    private _scaleX:number;
-    private _scaleY:number;
-    private _scaleZ:number;
-    private _rotateX:number;
-    private _rotateY:number;
-    private _rotateZ:number;
-    private _translateX:number;
-    private _translateY:number;
-    private _translateZ:number;
+    _scaleX:number;
+    _scaleY:number;
+    _scaleZ:number;
+    _rotateX:number;
+    _rotateY:number;
+    _rotateZ:number;
+    _translateX:number;
+    _translateY:number;
+    _translateZ:number;
     constructor() {
         super();
         this._children = [];
@@ -34,6 +34,9 @@ export class View extends EventEmitter implements IView {
         this.pageX = 0;
         this.pageY = 0;
         this.touchEnabled = false;
+        this.rotate(0);
+        this.translate(0);
+        this.scale(1);
     }
     draw(canvasContext: CanvasRenderingContext2D): void {
         this.onMeasure();
@@ -41,6 +44,9 @@ export class View extends EventEmitter implements IView {
         this.layout();
         this.onDraw(canvasContext);
         this.drawChildren(canvasContext);
+    }
+    path(canvasContext: CanvasRenderingContext2D):void{
+
     }
     private layout(): void {
         if (this.parent != null) {
@@ -66,11 +72,13 @@ export class View extends EventEmitter implements IView {
             canvasContext.save();
             canvasContext.strokeStyle = 'transparent'
             canvasContext.beginPath();
-            canvasContext.rect(child.x, child.y, child.width, child.height);
+            canvasContext.translate(child.x+child._translateX, child.y+child._translateY);
+            canvasContext.rect(0, 0, child.width, child.height);
             canvasContext.stroke();
             canvasContext.closePath();
             canvasContext.clip();
-            canvasContext.translate(child.x, child.y);
+            canvasContext.rotate(child._rotateX);
+            canvasContext.scale(child._scaleX,child._scaleY);
             child.draw(canvasContext);
             canvasContext.restore();
         });
@@ -124,9 +132,18 @@ export class View extends EventEmitter implements IView {
         }
     }
     scale(xyz:number,y?:number,z?:number):void{
-
+        this._scaleX = xyz;
+        this._scaleY = y||xyz;
+        this._scaleZ = z ||xyz;
     }
     rotate(xyz:number,y?:number,z?:number):void{
-
+        this._rotateX = xyz;
+        this._rotateY = y||xyz;
+        this._rotateZ = z ||xyz;
+    }
+    translate(xyz:number,y?:number,z?:number):void{
+        this._translateX = xyz;
+        this._translateY = y||xyz;
+        this._translateZ = z ||xyz;
     }
 }
