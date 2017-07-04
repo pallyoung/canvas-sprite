@@ -70,14 +70,17 @@ export class View extends EventDispatcher implements IView {
             canvasContext.strokeStyle = 'transparent'
             canvasContext.beginPath();
             canvasContext.translate(child.x+child._translateX, child.y+child._translateY);
+            canvasContext.translate(child.width/2, child.height/2);
+            canvasContext.rotate(child._rotateX);
+            canvasContext.translate(-child.width/2, -child.height/2);
+            canvasContext.scale(child._scaleX,child._scaleY);
             canvasContext.rect(0, 0, child.width, child.height);
             canvasContext.stroke();
             canvasContext.closePath();
             canvasContext.clip();
-            canvasContext.rotate(child._rotateX);
-            canvasContext.scale(child._scaleX,child._scaleY);
             child.layout(canvasContext);
             canvasContext.restore();
+           
         });
     }
     onDispatchTouchEvent(event: TouchEvent){
