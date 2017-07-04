@@ -15,6 +15,7 @@ export class Sprite extends View {
         this.width = canvas.width;
         this.canvasContext = canvas.getContext('2d');
         this.parent = this;
+        this.touchEnabled = true;
         var nativeEventDispatcher =  new  NativeEventDispatcher();
         nativeEventDispatcher.init(this.canvas,this);
     }

@@ -1,4 +1,4 @@
-import {IEventDispatcherDelegate} from './IEventDispatcherDelegate';
+import {IView} from './../views/IView';
 import {TouchEvent} from './TouchEvent';
 //是否支持touch事件
 var IS_TOUCH_ENABLE = "ontouchend" in document ? true : false;
@@ -9,13 +9,13 @@ var TOUCH_END= IS_TOUCH_ENABLE?'touchend':'mouseup';
 var CLICK = 'click';
 export class NativeEventDispatcher {
     private node:HTMLElement;
-    private delegate:IEventDispatcherDelegate;
+    private delegate:IView;
     private onTouchStart:(event)=>void;
     private onTouchMove:(event)=>void;
     private onTouchEnd:(event)=>void;
     constructor() {
     }
-    init(node:HTMLElement,delegate:IEventDispatcherDelegate):void{
+    init(node:HTMLElement,delegate:IView):void{
         this.node = node;
         this.delegate = delegate;
         this.bindNativeEvent();
@@ -42,7 +42,7 @@ export class NativeEventDispatcher {
                 event.changedTouches = [point];
                 event.targetTouches = [point];
             }
-            self.delegate.dispatchTouchEvent(event);
+            self.delegate.onDispatchTouchEvent(event);
         }
 
         this.node.addEventListener(TOUCH_START,this.onTouchStart,false);

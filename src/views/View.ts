@@ -13,6 +13,7 @@ export class View extends EventEmitter implements IView {
     private _children: Array<IView>;
     backgroundColor: string;
     parent: IView;
+    touchEnabled:boolean;
     private _scaleX:number;
     private _scaleY:number;
     private _scaleZ:number;
@@ -32,6 +33,7 @@ export class View extends EventEmitter implements IView {
         this.y = 0;
         this.pageX = 0;
         this.pageY = 0;
+        this.touchEnabled = false;
     }
     draw(canvasContext: CanvasRenderingContext2D): void {
         this.onMeasure();
@@ -73,22 +75,28 @@ export class View extends EventEmitter implements IView {
             canvasContext.restore();
         });
     }
-    dispatchTouchEvent(event: TouchEvent) {
+    onDispatchTouchEvent(event: TouchEvent){
+        if(!this.touchEnabled){
+            if (this.parent != this && event.isPropagation) {
+                this.parent.dispatchPropagationEvent(event)
+            }
+            return;
+        }
+        if(!this.dispatchTouchEvent(event)){
+            this.dispatchPropagationEvent(event);
+        }
+    }
+    dispatchTouchEvent(event: TouchEvent) :boolean{
         var { pageX, pageY } = event.touches[0];
-        var handle = false;
         for (let i = this._children.length - 1, children = this._children, child: IView; i >= 0; i--) {
             child = children[i];
             if (child.pageX < pageX &&
                 (child.pageX + child.width) > pageX &&
                 child.pageY < pageY &&
                 (child.pageY + child.pageY) > pageY) {
-                child.dispatchTouchEvent(event);
-                handle = true;
-                return false;
+                child.onDispatchTouchEvent(event);
+                return true;
             }
-        }
-        if (handle == false) {
-            this.dispatchPropagationEvent(event);
         }
         return false;
     }

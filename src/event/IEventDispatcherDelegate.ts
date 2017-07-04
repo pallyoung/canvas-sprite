@@ -2,6 +2,6 @@ import {Event} from './Event';
 import {TouchEvent} from './TouchEvent';
 
 export interface IEventDispatcherDelegate{
-    dispatchTouchEvent(evnet:Event):void;
+    dispatchTouchEvent(evnet:TouchEvent):void;
     dispatchPropagationEvent(event:Event):void;
 }
