@@ -8,7 +8,7 @@ export class Subscription {
         this.type = type;
         this.vendor = [];
     }
-    emit(event:Event): void {
+    dispatch(event:Event): void {
         for(let i = 0,l = this.vendor.length,vendor = this.vendor,subscriber;i<l;i++){
             subscriber = vendor[i];
             subscriber.listener.call(subscriber.context, event);

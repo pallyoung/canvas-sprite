@@ -2,14 +2,14 @@
 import {Subscription} from './Subscription';
 import {Event} from './Event';
 
-export class EventEmitter {
+export class EventDispatcher {
     private subscriptions: object;
     constructor() {
         this.subscriptions = {};
     }
-    emit(type: string, event:Event): void {
+    dispatchEvent(type: string, event:Event): void {
         console.log(event)
-        this.subscriptions[type] && this.subscriptions[type].emit(event);
+        this.subscriptions[type] && this.subscriptions[type].dispatch(event);
     }
     addEventListener(type: string, listener: () => any, context: any): void {
         var subscription: Subscription = this.subscriptions[type] || new Subscription(type);

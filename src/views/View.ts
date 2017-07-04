@@ -1,9 +1,9 @@
 'use strict'
-import { EventEmitter } from './../event/EventEmitter';
+import { EventDispatcher } from './../event/EventDispatcher';
 import { IView } from './IView';
 import { Event } from './../event/Event';
 import { TouchEvent } from './../event/TouchEvent';
-export class View extends EventEmitter implements IView {
+export class View extends EventDispatcher implements IView {
     height: number;
     width: number;
     x: number;
@@ -110,7 +110,7 @@ export class View extends EventEmitter implements IView {
     }
     dispatchPropagationEvent(event: Event) {
         event.target = this;
-        this.emit(event.type, event);
+        this.dispatchEvent(event.type, event);
         if (this.parent != this && event.isPropagation) {
             this.parent.dispatchPropagationEvent(event)
         }
