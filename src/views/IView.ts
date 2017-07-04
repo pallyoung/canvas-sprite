@@ -9,6 +9,7 @@ export interface IView{
     pageY:number;
     parent:IView;
     touchEnabled:boolean;
+    _isAttached:boolean;
     _scaleX:number;
     _scaleY:number;
     _scaleZ:number;
@@ -23,6 +24,7 @@ export interface IView{
     layout(canvasContext: CanvasRenderingContext2D):void;
     onLayout():void;
     onMeasure():void;
+    draw(canvasContext:CanvasRenderingContext2D):void;
     onDraw(canvasContext:CanvasRenderingContext2D):void;
     rotate(xyz:number,y?:number,z?:number):void;
     scale(xyz:number,y?:number,z?:number):void;

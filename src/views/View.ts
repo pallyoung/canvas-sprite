@@ -23,6 +23,7 @@ export class View extends EventDispatcher implements IView {
     _translateX:number;
     _translateY:number;
     _translateZ:number;
+    _isAttached:boolean;
     constructor() {
         super();
         this._children = [];
@@ -37,9 +38,10 @@ export class View extends EventDispatcher implements IView {
         this.rotate(0);
         this.translate(0);
         this.scale(1);
+        this._isAttached = false;
     }
     path(canvasContext: CanvasRenderingContext2D):void{
-
+        
     }
     layout(canvasContext: CanvasRenderingContext2D): void {
         this.onMeasure();
@@ -49,12 +51,15 @@ export class View extends EventDispatcher implements IView {
             this.pageY = this.parent.pageY + this.y;
         }
         this.onDraw(canvasContext);
-        this.layoutChildren(canvasContext);
+        this.dispatchDraw(canvasContext);
     }
     onLayout(): void {
 
     }
     onMeasure(): void {
+
+    }
+    draw(canvasContext: CanvasRenderingContext2D):void{
 
     }
     onDraw(canvasContext: CanvasRenderingContext2D): void {
@@ -63,7 +68,7 @@ export class View extends EventDispatcher implements IView {
         canvasContext.fillRect(0, 0, this.width, this.height);
         canvasContext.closePath();
     }
-    layoutChildren(canvasContext: CanvasRenderingContext2D): void {
+    dispatchDraw(canvasContext: CanvasRenderingContext2D):void{
         var self = this;
         this._children.forEach(function (child) {
             canvasContext.save();
@@ -116,7 +121,11 @@ export class View extends EventDispatcher implements IView {
         }
     }
     addChild(child: IView): void {
+        if(child._isAttached){
+            throw new Error();
+        }
         child.parent = this;
+        child._isAttached = true;
         child.height = child.height || this.height;
         child.width = child.width || this.width;
         child.x = child.x || 0;

@@ -13,6 +13,7 @@ declare namespace eventEmitter{
     export interface Event {
         type: string;
         target: any;
+        currentTarget:any;
         timeStamp: number;
         isPropagation: boolean;
         isStopImmediate: boolean;
@@ -20,7 +21,7 @@ declare namespace eventEmitter{
         stopImmediatePropagation(): void;
     }
     export interface EventEmitter {
-        emit(type: string, event: Event): void;
+        dispatchEvent(type: string, event: Event): void;
         addEventListener(type: string, listener: () => any, context: any): void;
         removeEventListener(type: string, listener: () => any, context: any): void;
     }
