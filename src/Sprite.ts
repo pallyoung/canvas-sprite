@@ -34,7 +34,7 @@ export class Sprite extends View {
         var self = this;
         this.animationFrameHandle = requestAnimationFrame(function () {
             self.canvasContext.clearRect(0, 0, self.width, self.height);
-            self.draw(self.canvasContext);
+            self.layout(self.canvasContext);
             self.run();
         });
     }

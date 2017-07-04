@@ -20,7 +20,7 @@ export interface IView{
     _translateZ:number;
     addChild(child:IView):void;
     removeChild(child:IView):void;
-    draw(canvasContext: CanvasRenderingContext2D):void;
+    layout(canvasContext: CanvasRenderingContext2D):void;
     onLayout():void;
     onMeasure():void;
     onDraw(canvasContext:CanvasRenderingContext2D):void;

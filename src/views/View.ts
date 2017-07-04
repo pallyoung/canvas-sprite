@@ -38,21 +38,18 @@ export class View extends EventDispatcher implements IView {
         this.translate(0);
         this.scale(1);
     }
-    draw(canvasContext: CanvasRenderingContext2D): void {
-        this.onMeasure();
-        this.onLayout();
-        this.layout();
-        this.onDraw(canvasContext);
-        this.drawChildren(canvasContext);
-    }
     path(canvasContext: CanvasRenderingContext2D):void{
 
     }
-    private layout(): void {
+    layout(canvasContext: CanvasRenderingContext2D): void {
+        this.onMeasure();
+        this.onLayout();
         if (this.parent != null) {
             this.pageX = this.parent.pageX + this.x;
             this.pageY = this.parent.pageY + this.y;
         }
+        this.onDraw(canvasContext);
+        this.layoutChildren(canvasContext);
     }
     onLayout(): void {
 
@@ -66,7 +63,7 @@ export class View extends EventDispatcher implements IView {
         canvasContext.fillRect(0, 0, this.width, this.height);
         canvasContext.closePath();
     }
-    drawChildren(canvasContext: CanvasRenderingContext2D): void {
+    layoutChildren(canvasContext: CanvasRenderingContext2D): void {
         var self = this;
         this._children.forEach(function (child) {
             canvasContext.save();
@@ -79,7 +76,7 @@ export class View extends EventDispatcher implements IView {
             canvasContext.clip();
             canvasContext.rotate(child._rotateX);
             canvasContext.scale(child._scaleX,child._scaleY);
-            child.draw(canvasContext);
+            child.layout(canvasContext);
             canvasContext.restore();
         });
     }
