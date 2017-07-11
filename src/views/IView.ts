@@ -12,13 +12,9 @@ export interface IView{
     _isAttached:boolean;
     _scaleX:number;
     _scaleY:number;
-    _scaleZ:number;
-    _rotateX:number;
-    _rotateY:number;
-    _rotateZ:number;
+    _rotate:number;
     _translateX:number;
     _translateY:number;
-    _translateZ:number;
     addChild(child:IView):void;
     removeChild(child:IView):void;
     layout(canvasContext: CanvasRenderingContext2D):void;

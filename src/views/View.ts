@@ -16,13 +16,9 @@ export class View extends EventDispatcher implements IView {
     touchEnabled:boolean;
     _scaleX:number;
     _scaleY:number;
-    _scaleZ:number;
-    _rotateX:number;
-    _rotateY:number;
-    _rotateZ:number;
+    _rotate:number;
     _translateX:number;
     _translateY:number;
-    _translateZ:number;
     _isAttached:boolean;
     constructor() {
         super();
@@ -50,8 +46,7 @@ export class View extends EventDispatcher implements IView {
             this.pageX = this.parent.pageX + this.x;
             this.pageY = this.parent.pageY + this.y;
         }
-        this.onDraw(canvasContext);
-        this.dispatchDraw(canvasContext);
+       this.draw(canvasContext);
     }
     onLayout(): void {
 
@@ -60,7 +55,8 @@ export class View extends EventDispatcher implements IView {
 
     }
     draw(canvasContext: CanvasRenderingContext2D):void{
-
+        this.onDraw(canvasContext);
+        this.dispatchDraw(canvasContext);
     }
     onDraw(canvasContext: CanvasRenderingContext2D): void {
         canvasContext.beginPath();
@@ -76,7 +72,7 @@ export class View extends EventDispatcher implements IView {
             canvasContext.beginPath();
             canvasContext.translate(child.x+child._translateX, child.y+child._translateY);
             canvasContext.translate(child.width/2, child.height/2);
-            canvasContext.rotate(child._rotateX);
+            canvasContext.rotate(child._rotate);
             canvasContext.translate(-child.width/2, -child.height/2);
             canvasContext.scale(child._scaleX,child._scaleY);
             canvasContext.rect(0, 0, child.width, child.height);
@@ -140,19 +136,17 @@ export class View extends EventDispatcher implements IView {
             }
         }
     }
-    scale(xyz:number,y?:number,z?:number):void{
-        this._scaleX = xyz;
-        this._scaleY = y||xyz;
-        this._scaleZ = z ||xyz;
+    scale(xy:number,y?:number):void{
+        this._scaleX = xy;
+        this._scaleY = y||xy;
     }
-    rotate(xyz:number,y?:number,z?:number):void{
-        this._rotateX = xyz;
-        this._rotateY = y||xyz;
-        this._rotateZ = z ||xyz;
+    rotate(rotate:number,x?:number,y?:number):void{
+        this._rotate = rotate;
+        // this._rotateY = y||xyz;
+        // this._rotateZ = z ||xyz;
     }
-    translate(xyz:number,y?:number,z?:number):void{
-        this._translateX = xyz;
-        this._translateY = y||xyz;
-        this._translateZ = z ||xyz;
+    translate(xy:number,y?:number):void{
+        this._translateX = xy;
+        this._translateY = y||xy;
     }
 }
