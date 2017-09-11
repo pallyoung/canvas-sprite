@@ -5,9 +5,6 @@
         // "experimentalDecorators": true,
         "module": "amd",
         "moduleResolution": "node",
-        // "strictNullChecks": true,
-        //"types": ["./CanvasSprite.d.ts"],
-        //"typeRoots":["./types"],
         "baseUrl":".",
         "rootDir": "./src",
         "target": "es5",
@@ -19,12 +16,6 @@
         "outDir": "./dist"
         //"outFile":"canvas-sprite.js"
     },
-    "files": [
-        "src/index.ts"        
-    ],
-    // "include": [
-    //     "src/**/*"
-    // ],
     "exclude": [
         "node_modules"
     ]

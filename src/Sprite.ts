@@ -1,6 +1,5 @@
 'use script'
 import { View } from './views/View';
-import { ISprite } from './ISprite';
 import {NativeEventDispatcher} from './event/NativeEventDispatcher';
 export class Sprite extends View {
     canvasContext: CanvasRenderingContext2D;

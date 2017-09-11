@@ -1,31 +1,26 @@
 'use strict'
 import { EventDispatcher } from './../event/EventDispatcher';
-import { IView } from './IView';
 import { Event } from './../event/Event';
 import { TouchEvent } from './../event/TouchEvent';
-export class View extends EventDispatcher implements IView {
-    height: number;
-    width: number;
+export class View extends EventDispatcher {
     x: number;
     y: number;
     pageX: number;
     pageY: number;
     private _children: Array<IView>;
-    backgroundColor: string;
     parent: IView;
     touchEnabled:boolean;
     _scaleX:number;
     _scaleY:number;
     _rotate:number;
+    _rotateX:number;
+    _rotateY:number;
     _translateX:number;
     _translateY:number;
     _isAttached:boolean;
     constructor() {
         super();
         this._children = [];
-        this.backgroundColor = 'transparent'
-        this.height = 0;
-        this.width = 0;
         this.x = 0;
         this.y = 0;
         this.pageX = 0;
@@ -60,8 +55,6 @@ export class View extends EventDispatcher implements IView {
     }
     onDraw(canvasContext: CanvasRenderingContext2D): void {
         canvasContext.beginPath();
-        canvasContext.fillStyle = this.backgroundColor;
-        canvasContext.fillRect(0, 0, this.width, this.height);
         canvasContext.closePath();
     }
     dispatchDraw(canvasContext: CanvasRenderingContext2D):void{
@@ -71,11 +64,11 @@ export class View extends EventDispatcher implements IView {
             canvasContext.strokeStyle = 'transparent'
             canvasContext.beginPath();
             canvasContext.translate(child.x+child._translateX, child.y+child._translateY);
-            canvasContext.translate(child.width/2, child.height/2);
+            canvasContext.translate(child._rotateX, child._rotateY);
             canvasContext.rotate(child._rotate);
-            canvasContext.translate(-child.width/2, -child.height/2);
+            canvasContext.translate(child._rotateX, child._rotateY);
             canvasContext.scale(child._scaleX,child._scaleY);
-            canvasContext.rect(0, 0, child.width, child.height);
+            child.path(canvasContext);
             canvasContext.stroke();
             canvasContext.closePath();
             canvasContext.clip();
@@ -122,8 +115,6 @@ export class View extends EventDispatcher implements IView {
         }
         child.parent = this;
         child._isAttached = true;
-        child.height = child.height || this.height;
-        child.width = child.width || this.width;
         child.x = child.x || 0;
         child.y = child.y || 0;
         this._children.push(child);
@@ -142,8 +133,8 @@ export class View extends EventDispatcher implements IView {
     }
     rotate(rotate:number,x?:number,y?:number):void{
         this._rotate = rotate;
-        // this._rotateY = y||xyz;
-        // this._rotateZ = z ||xyz;
+        this._rotateX = x||0;
+        this._rotateY = y||0;
     }
     translate(xy:number,y?:number):void{
         this._translateX = xy;
