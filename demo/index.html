@@ -16,6 +16,20 @@
             </p>
     </div>
     <script>
+        document.body.children[0].addEventListener('click',function(e){
+            console.log(e.target);
+            console.log(e.currentTarget);
+            console.log(e.isTrusted);
+            window.e = e
+            console.log(e.composedPath())
+        },false)
+        document.body.addEventListener('click',function(e){
+            console.log(e.target);
+            console.log(e.currentTarget);
+            console.log(e.isTrusted);
+            window.a = e
+            console.log(e.composedPath())
+        },false)
         var sprite = new CanvasSprite.Sprite(document.getElementById('canvas'));
         var red = new CanvasSprite.View();
         red.backgroundColor = 'red';

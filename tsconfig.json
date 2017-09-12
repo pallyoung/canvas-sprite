@@ -13,8 +13,8 @@
             "dom",
             "es2015.promise"
         ],
-        "outDir": "./dist"
-        //"outFile":"canvas-sprite.js"
+        // "outDir": "./dist"
+        "outFile":"canvas-sprite.js"
     },
     "exclude": [
         "node_modules"
