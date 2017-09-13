@@ -1,4 +1,6 @@
 'use strict';
+/// <reference path="./../paint/Painter.ts" />
+/// <reference path="../event/EventTarget.ts" />
 'use script';
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -10,8 +12,250 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-/// <reference path="../event/EventTarget" />
-/// <reference path="../paint/Pianter" />
+var cs;
+(function (cs) {
+    var paint;
+    (function (paint_1) {
+        var Painter;
+        (function (Painter) {
+            function childrenForEach(children) {
+            }
+            function paint(displayer) {
+                var children = displayer.children;
+                var i = 0, l = children.length, child;
+                var context = displayer.canvasContext;
+                child = children[0];
+                measure(child, 0, 0);
+                draw(child, displayer.canvasContext);
+            }
+            Painter.paint = paint;
+            function setHeight(view, childrenHeight) {
+                if (view.height === view.WRAP_CONTENT) {
+                    view.height = childrenHeight;
+                }
+                else if (view.height === view.MATCH_PARNET) {
+                    var parent = view.parent || view.displayer;
+                    if (parent) {
+                        view.height = parent.height;
+                    }
+                }
+            }
+            function setWidth(view, childrenWidth) {
+                if (view.width === view.WRAP_CONTENT) {
+                    view.width = childrenWidth;
+                }
+                else if (view.width === view.MATCH_PARNET) {
+                    var parent = view.parent || view.displayer;
+                    if (parent) {
+                        view.width = parent.width;
+                    }
+                }
+            }
+            function measure(view, preWidth, preHeight) {
+                var children = view.children;
+                var i = 0, l = children.length, child;
+                var childrenHeight = 0, childrenWidth = 0;
+                while (i < l) {
+                    child = children[i];
+                    measure(child, childrenWidth, childrenHeight);
+                    childrenHeight = Math.max(child.height + child.y, childrenHeight);
+                    childrenWidth = Math.max(child.width + child.x, childrenWidth);
+                    i++;
+                }
+                setHeight(view, childrenHeight);
+                setWidth(view, childrenWidth);
+                view.onMeasure(view.width, view.height);
+                layout(view, preWidth, preHeight);
+            }
+            function layout(view, preWidth, preHeight) {
+                var top = view.y;
+                var left = view.x;
+                if (top === undefined) {
+                    top = preHeight;
+                }
+                if (left === undefined) {
+                    left = preWidth;
+                }
+                var right = left + view.width;
+                var bottom = top + view.height;
+                view.onLayout(top, left, right, bottom);
+            }
+            function draw(view, canvasContext) {
+                canvasContext.save();
+                canvasContext.strokeStyle = 'transparent';
+                canvasContext.fillStyle = 'transparent';
+                canvasContext.beginPath();
+                canvasContext.translate(view.x, view.y);
+                canvasContext.stroke();
+                canvasContext.closePath();
+                canvasContext.clip();
+                canvasContext.save();
+                view.onDraw(canvasContext);
+                canvasContext.restore();
+                view.children.forEach(function (child) {
+                    draw(child, canvasContext);
+                });
+                canvasContext.restore();
+            }
+        })(Painter = paint_1.Painter || (paint_1.Painter = {}));
+    })(paint = cs.paint || (cs.paint = {}));
+})(cs || (cs = {}));
+/**
+ * https://dom.spec.whatwg.org/#dom-event-composed
+ */
+var cs;
+(function (cs) {
+    var event;
+    (function (event_1) {
+        ;
+        ;
+        function flattenEventListenerOptions(options) {
+            if (typeof options === 'boolean') {
+                return options;
+            }
+            else {
+                return options.capture;
+            }
+        }
+        function flattenAddEventListenerOptions(options) {
+            var capture = flattenEventListenerOptions(options);
+            var once = false, passive = false;
+            if (typeof options === 'object') {
+                once = !!options.once;
+                passive = !!options.passive;
+            }
+            return {
+                capture: capture,
+                once: once,
+                passive: passive
+            };
+        }
+        /**
+         * @export
+         * @class EventTarget
+         * @description implement EventTarget interface
+         */
+        var EventListener = (function () {
+            function EventListener(type, callback, options) {
+                this.$capture = false;
+                this.$passive = false;
+                this.$once = false;
+                this.$removed = false;
+                this.$type = type;
+                this.$callback = callback;
+                options = options || {
+                    passive: false,
+                    once: false,
+                    capture: false
+                };
+                this.$passive = !!options.passive;
+                this.$once = !!options.once;
+                this.$capture = !!options.capture;
+            }
+            Object.defineProperty(EventListener.prototype, "type", {
+                get: function () {
+                    return this.$type;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EventListener.prototype, "callback", {
+                get: function () {
+                    return this.$callback;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EventListener.prototype, "capture", {
+                get: function () {
+                    return this.$capture;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EventListener.prototype, "passive", {
+                get: function () {
+                    return this.$passive;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EventListener.prototype, "once", {
+                get: function () {
+                    return this.$once;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EventListener.prototype, "removed", {
+                get: function () {
+                    return this.$removed;
+                },
+                set: function (removed) {
+                    this.$removed = removed;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            EventListener.prototype.handleEvent = function (event) {
+                if (event.type == this.$type && !this.$removed) {
+                    this.$callback.call(null, event);
+                }
+            };
+            return EventListener;
+        }());
+        var EventTarget = (function () {
+            function EventTarget() {
+                this.$eventListeners = [];
+            }
+            EventTarget.prototype.addEventListener = function (type, callback, options) {
+                if (callback == null) {
+                    return;
+                }
+                var eventListeners = this.$eventListeners;
+                var eventListener;
+                var i = 0, l = eventListeners.length;
+                options = flattenAddEventListenerOptions(options);
+                while (i < l) {
+                    eventListener = eventListeners[i];
+                    if (eventListener.type === type && eventListener.callback === callback && eventListener.capture === options.capture) {
+                        return;
+                    }
+                    i++;
+                }
+                eventListeners.push(new EventListener(type, callback, options));
+            };
+            EventTarget.prototype.removeEventListener = function (type, callback, options) {
+                if (callback == null) {
+                    return;
+                }
+                var eventListeners = this.$eventListeners;
+                var eventListener;
+                var i = 0, l = eventListeners.length;
+                options = flattenEventListenerOptions(options);
+                while (i < l) {
+                    eventListener = eventListeners[i];
+                    if (eventListener.type === type && eventListener.callback === callback && eventListener.capture === options) {
+                        eventListeners.splice(i, 1);
+                        eventListener.removed = true;
+                        l--;
+                    }
+                    else {
+                        i++;
+                    }
+                }
+            };
+            EventTarget.prototype.dispatchEvent = function (event) {
+                this.$eventListeners.forEach(function (eventListener) {
+                    eventListener.handleEvent(event);
+                });
+                return event.cancelable && event.defaultPrevented;
+            };
+            return EventTarget;
+        }());
+        event_1.EventTarget = EventTarget;
+    })(event = cs.event || (cs.event = {}));
+})(cs || (cs = {}));
 var cs;
 (function (cs) {
     var displayer;
@@ -86,7 +330,8 @@ var cs;
                     return;
                 }
                 else {
-                    requestAnimationFrame(function () { return cs.paint.Painter.paint(_this); });
+                    cs.paint.Painter.paint(this);
+                    requestAnimationFrame(function () { return _this.piant(); });
                 }
             };
             return Displayer;
@@ -94,10 +339,33 @@ var cs;
         displayer.Displayer = Displayer;
     })(displayer = cs.displayer || (cs.displayer = {}));
 })(cs || (cs = {}));
-/**
- * https://dom.spec.whatwg.org/#dom-event-composed
- */
-/// <reference path="../time/Time" />
+var cs;
+(function (cs) {
+    var TIME_ORIGIN = Date.now();
+    var time;
+    (function (time) {
+        var TimeImpl = (function () {
+            function TimeImpl() {
+            }
+            Object.defineProperty(TimeImpl.prototype, "TIME_ORIGIN", {
+                get: function () {
+                    return TIME_ORIGIN;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(TimeImpl.prototype, "timeStamp", {
+                get: function () {
+                    return Date.now() - TIME_ORIGIN;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return TimeImpl;
+        }());
+        time.Time = new TimeImpl();
+    })(time = cs.time || (cs.time = {}));
+})(cs || (cs = {}));
 var cs;
 (function (cs) {
     var event;
@@ -332,294 +600,6 @@ var cs;
     })(event = cs.event || (cs.event = {}));
 })(cs || (cs = {}));
 /**
- * https://dom.spec.whatwg.org/#dom-event-composed
- */
-var cs;
-(function (cs) {
-    var event;
-    (function (event_1) {
-        ;
-        ;
-        function flattenEventListenerOptions(options) {
-            if (typeof options === 'boolean') {
-                return options;
-            }
-            else {
-                return options.capture;
-            }
-        }
-        function flattenAddEventListenerOptions(options) {
-            var capture = flattenEventListenerOptions(options);
-            var once = false, passive = false;
-            if (typeof options === 'object') {
-                once = !!options.once;
-                passive = !!options.passive;
-            }
-            return {
-                capture: capture,
-                once: once,
-                passive: passive
-            };
-        }
-        /**
-         * @export
-         * @class EventTarget
-         * @description implement EventTarget interface
-         */
-        var EventListener = (function () {
-            function EventListener(type, callback, options) {
-                this.$capture = false;
-                this.$passive = false;
-                this.$once = false;
-                this.$removed = false;
-                this.$type = type;
-                this.$callback = callback;
-                options = options || {
-                    passive: false,
-                    once: false,
-                    capture: false
-                };
-                this.$passive = !!options.passive;
-                this.$once = !!options.once;
-                this.$capture = !!options.capture;
-            }
-            Object.defineProperty(EventListener.prototype, "type", {
-                get: function () {
-                    return this.$type;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(EventListener.prototype, "callback", {
-                get: function () {
-                    return this.$callback;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(EventListener.prototype, "capture", {
-                get: function () {
-                    return this.$capture;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(EventListener.prototype, "passive", {
-                get: function () {
-                    return this.$passive;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(EventListener.prototype, "once", {
-                get: function () {
-                    return this.$once;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(EventListener.prototype, "removed", {
-                get: function () {
-                    return this.$removed;
-                },
-                set: function (removed) {
-                    this.$removed = removed;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            EventListener.prototype.handleEvent = function (event) {
-                if (event.type == this.$type && !this.$removed) {
-                    this.$callback.call(null, event);
-                }
-            };
-            return EventListener;
-        }());
-        var EventTarget = (function () {
-            function EventTarget() {
-                this.$eventListeners = [];
-            }
-            EventTarget.prototype.addEventListener = function (type, callback, options) {
-                if (callback == null) {
-                    return;
-                }
-                var eventListeners = this.$eventListeners;
-                var eventListener;
-                var i = 0, l = eventListeners.length;
-                options = flattenAddEventListenerOptions(options);
-                while (i < l) {
-                    eventListener = eventListeners[i];
-                    if (eventListener.type === type && eventListener.callback === callback && eventListener.capture === options.capture) {
-                        return;
-                    }
-                    i++;
-                }
-                eventListeners.push(new EventListener(type, callback, options));
-            };
-            EventTarget.prototype.removeEventListener = function (type, callback, options) {
-                if (callback == null) {
-                    return;
-                }
-                var eventListeners = this.$eventListeners;
-                var eventListener;
-                var i = 0, l = eventListeners.length;
-                options = flattenEventListenerOptions(options);
-                while (i < l) {
-                    eventListener = eventListeners[i];
-                    if (eventListener.type === type && eventListener.callback === callback && eventListener.capture === options) {
-                        eventListeners.splice(i, 1);
-                        eventListener.removed = true;
-                        l--;
-                    }
-                    else {
-                        i++;
-                    }
-                }
-            };
-            EventTarget.prototype.dispatchEvent = function (event) {
-                this.$eventListeners.forEach(function (eventListener) {
-                    eventListener.handleEvent(event);
-                });
-                return event.cancelable && event.defaultPrevented;
-            };
-            return EventTarget;
-        }());
-        event_1.EventTarget = EventTarget;
-        console.log(EventTarget)
-    })(event = cs.event || (cs.event = {}));
-})(cs || (cs = {}));
-var cs;
-(function (cs) {
-    var paint;
-    (function (paint_1) {
-        var Painter;
-        (function (Painter) {
-            function childrenForEach(children) {
-            }
-            function paint(displayer) {
-                var children = displayer.children;
-                var i = 0, l = children.length, child;
-                var context = displayer.canvasContext;
-                child = children[0];
-                measure(child, 0, 0);
-                draw(child, displayer.canvasContext);
-            }
-            Painter.paint = paint;
-            function setHeight(view, childrenHeight) {
-                if (view.height === view.WRAP_CONTENT) {
-                    view.height = childrenHeight;
-                }
-                else if (view.height === view.MATCH_PARNET) {
-                    var parent = view.parent || view.displayer;
-                    if (parent) {
-                        view.height = parent.height;
-                    }
-                }
-            }
-            function setWidth(view, childrenWidth) {
-                if (view.width === view.WRAP_CONTENT) {
-                    view.width = childrenWidth;
-                }
-                else if (view.width === view.MATCH_PARNET) {
-                    var parent = view.parent || view.displayer;
-                    if (parent) {
-                        view.width = parent.width;
-                    }
-                }
-            }
-            function measure(view, preWidth, preHeight) {
-                var children = view.children;
-                var i = 0, l = children.length, child;
-                var childrenHeight = 0, childrenWidth = 0;
-                while (i < l) {
-                    child = children[i];
-                    measure(child, childrenWidth, childrenHeight);
-                    childrenHeight = Math.max(child.height + child.y, childrenHeight);
-                    childrenWidth = Math.max(child.width + child.x, childrenWidth);
-                    i++;
-                }
-                setHeight(view, childrenHeight);
-                setWidth(view, childrenWidth);
-                view.onMeasure(view.width, view.height);
-                layout(view, preWidth, preHeight);
-            }
-            function layout(view, preWidth, preHeight) {
-                var top = view.y;
-                var left = view.x;
-                if (top === undefined) {
-                    top = preHeight;
-                }
-                if (left === undefined) {
-                    left = preWidth;
-                }
-                var right = left + view.width;
-                var bottom = top + view.height;
-                view.onLayout(top, left, right, bottom);
-            }
-            function draw(view, canvasContext) {
-                canvasContext.save();
-                canvasContext.strokeStyle = 'transparent';
-                canvasContext.fillStyle = 'transparent';
-                canvasContext.beginPath();
-                canvasContext.translate(view.x, view.y);
-                canvasContext.stroke();
-                canvasContext.closePath();
-                canvasContext.clip();
-                view.onDraw(canvasContext);
-                view.children.forEach(function (child) {
-                    draw(child, canvasContext);
-                });
-                canvasContext.restore();
-            }
-        })(Painter = paint_1.Painter || (paint_1.Painter = {}));
-    })(paint = cs.paint || (cs.paint = {}));
-})(cs || (cs = {}));
-var cs;
-(function (cs) {
-    var TIME_ORIGIN = Date.now();
-    var time;
-    (function (time) {
-        var TimeImpl = (function () {
-            function TimeImpl() {
-            }
-            Object.defineProperty(TimeImpl.prototype, "TIME_ORIGIN", {
-                get: function () {
-                    return TIME_ORIGIN;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(TimeImpl.prototype, "timeStamp", {
-                get: function () {
-                    return Date.now() - TIME_ORIGIN;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return TimeImpl;
-        }());
-        time.Time = new TimeImpl();
-    })(time = cs.time || (cs.time = {}));
-})(cs || (cs = {}));
-/// <reference path="./View" />
-var cs;
-(function (cs) {
-    var view;
-    (function (view) {
-        var Text = (function (_super) {
-            __extends(Text, _super);
-            function Text() {
-                return _super.call(this) || this;
-            }
-            Text.prototype.onDraw = function () {
-            };
-            return Text;
-        }(view.View));
-        view.Text = Text;
-    })(view = cs.view || (cs.view = {}));
-})(cs || (cs = {}));
-/// <reference path="../event/EventTarget" />
-/**
  * 构造View
  * onMeasure
  * onSizeChanged
@@ -765,12 +745,17 @@ var cs;
             View.prototype.onLayout = function (t, r, b, l) {
                 this.x = t;
                 this.y = b;
+                console.log('onlayout');
             };
             View.prototype.onMeasure = function (ow, oh) {
                 this.height = oh;
                 this.width = ow;
+                console.log('measure');
             };
             View.prototype.onDraw = function (canvasContext) {
+                canvasContext.fillStyle = this.backgroundColor;
+                canvasContext.fillRect(0, 0, this.width, this.height);
+                console.log('draw');
             };
             View.prototype.onSizeChanged = function () {
             };
@@ -815,5 +800,21 @@ var cs;
             return View;
         }(cs.event.EventTarget));
         view.View = View;
+    })(view = cs.view || (cs.view = {}));
+})(cs || (cs = {}));
+var cs;
+(function (cs) {
+    var view;
+    (function (view) {
+        var Text = (function (_super) {
+            __extends(Text, _super);
+            function Text() {
+                return _super.call(this) || this;
+            }
+            Text.prototype.onDraw = function () {
+            };
+            return Text;
+        }(view.View));
+        view.Text = Text;
     })(view = cs.view || (cs.view = {}));
 })(cs || (cs = {}));

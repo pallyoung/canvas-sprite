@@ -70,7 +70,8 @@ namespace cs {
                 if(this.$children.length<1){
                     return;
                 }else{
-                    requestAnimationFrame(()=>paint.Painter.paint(this))
+                    paint.Painter.paint(this)                    
+                    requestAnimationFrame(()=>this.piant())
                 }
             }
             // public removeContentView(view:view.View):void{

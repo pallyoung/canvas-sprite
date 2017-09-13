@@ -12,7 +12,6 @@
     <div style="height:1000px;">
             <div style="height:100px"></div>
             <p style = "margin:100px 100px">
-                <canvas id = 'canvas' height="600" width="300" style = "margin:auto"></canvas>
             </p>
     </div>
     <script>
@@ -30,26 +29,26 @@
             window.a = e
             console.log(e.composedPath())
         },false)
-        var sprite = new CanvasSprite.Sprite(document.getElementById('canvas'));
-        var red = new CanvasSprite.View();
+        var display = new cs.displayer.Displayer(document.getElementsByTagName('p')[0],{height:300,width:300});
+        var View  =cs.view.View;
+        var red = new View();
+        display.setContentView(red);
         red.backgroundColor = 'red';
-        var blue = new CanvasSprite.View();
+        var blue = new View();
         blue.backgroundColor = 'blue';
         blue.height = 100;
         blue.width = 200;
         blue.x = 100;
         blue.y = 100;
-        var black = new CanvasSprite.View();
+        var black = new View();
         black.backgroundColor = 'black';
         black.height = 50;
         black.width = 50;
         black.x = 50;
         black.y = 50;
+        red.addChild(blue)
         blue.addChild(black);
-        sprite.addChild( red)
-        sprite.addChild( blue)
-        sprite.run();
-        requestAnimationFrame(function(time){black.rotate(time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
+       // requestAnimationFrame(function(time){black.rotate(time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
     </script>
 </body>
 </html>

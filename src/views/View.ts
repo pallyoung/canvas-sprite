@@ -69,7 +69,7 @@ namespace cs {
             public get parent():View{
                 return this.$parent;
             }
-
+            backgroundColor:string;
             private $displayer:displayer.Displayer= null;
             
             public get displayer():displayer.Displayer{
@@ -106,12 +106,17 @@ namespace cs {
             onLayout(t:number,r:number,b:number,l:number): void {
                 this.x = t;
                 this.y = b;
+                console.log('onlayout')
             }
             onMeasure(ow:number,oh:number): void {
                 this.height = oh;
                 this.width = ow;
+                console.log('measure')
             }
             onDraw(canvasContext: CanvasRenderingContext2D): void {
+                canvasContext.fillStyle = this.backgroundColor;
+                canvasContext.fillRect(0,0,this.width,this.height);
+                console.log('draw')
             }
             onSizeChanged(){
 

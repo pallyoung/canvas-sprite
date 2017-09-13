@@ -72,7 +72,9 @@ namespace cs{
                 canvasContext.stroke();
                 canvasContext.closePath();
                 canvasContext.clip();
+                canvasContext.save();
                 view.onDraw(canvasContext); 
+                canvasContext.restore();
                 view.children.forEach(function(child){
                     draw(child,canvasContext);
                 });               
