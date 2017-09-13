@@ -7,3 +7,4 @@ src/**/**/*.js
 
 
 npm-debug.log
+npm-debug.log.*
