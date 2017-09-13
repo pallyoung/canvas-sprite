@@ -1,5 +1,7 @@
 'use script'
-/// <reference path="../event/EventTarget" />
+/// <reference path="../paint/Pianter.ts" />
+/// <reference path="../event/EventTarget.ts" />
+
 
 namespace cs {
     export namespace displayer{
@@ -55,12 +57,21 @@ namespace cs {
                 this.$width = width;
                 this.$canvasContext = this.$canvas.getContext('2d');
                 this.onCreate();
+
             }
             onCreate(){
 
             }
             public setContentView(view:view.View):void{
-                this.$children.push(view);
+                this.$children = [view];
+                this.piant();
+            }
+            private piant(){
+                if(this.$children.length<1){
+                    return;
+                }else{
+                    requestAnimationFrame(()=>paint.Painter.paint(this))
+                }
             }
             // public removeContentView(view:view.View):void{
             //     var children = this.$children,child;

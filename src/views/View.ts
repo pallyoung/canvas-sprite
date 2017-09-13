@@ -1,5 +1,5 @@
 'use strict'
-/// <reference path="../event/EventTarget" />
+/// <reference path="../event/EventTarget.ts" />
 /**
  * 构造View
  * onMeasure

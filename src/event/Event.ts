@@ -2,7 +2,7 @@
 /**
  * https://dom.spec.whatwg.org/#dom-event-composed
  */
-/// <reference path="../time/Time" />
+/// <reference path="../time/Time.ts" />
 
 namespace cs {
     export namespace event {
