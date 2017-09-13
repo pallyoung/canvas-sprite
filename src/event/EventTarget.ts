@@ -95,7 +95,7 @@ namespace cs{
         }
         export class EventTarget{
             private $eventListeners:Array<EventListener> = [];
-            constructor(type:string,eventInitDict?:EventInit ){
+            constructor(){
 
             }
             public addEventListener(type:string, callback:(event:Event)=>void,options:boolean|AddEventListenerOptions):void{

@@ -1,143 +1,159 @@
 'use strict'
+/// <reference path="../event/EventTarget" />
+/**
+ * 构造View
+ * onMeasure
+ * onSizeChanged
+ * onLayout
+ * onDraw
+ */
 namespace cs {
     export namespace view {
-        export class View extends EventDispatcher {
-            x: number;
-            y: number;
-            pageX: number;
-            pageY: number;
-            private _children: Array<View>;
-            parent: View;
-            touchEnabled: boolean;
-            _scaleX: number;
-            _scaleY: number;
-            _rotate: number;
-            _rotateX: number;
-            _rotateY: number;
-            _translateX: number;
-            _translateY: number;
-            _isAttached: boolean;
+
+        const MATCH_PARNET = Infinity;
+        const WRAP_CONTENT = -Infinity;
+        export class View extends event.EventTarget {
+            public get MATCH_PARNET():number{
+                return MATCH_PARNET
+            };
+            public get WRAP_CONTENT():number{
+                return WRAP_CONTENT;
+            };
+            private $x: number;
+            public set x(x:number){
+                this.$x = x;
+            }
+            public get x():number{
+                return this.$x||0;
+            }
+            private $y: number;
+            public set y(y:number){
+                this.$y = y;
+            }
+            public get y():number{
+                return this.$y;
+            }
+            private get clientX(){
+                return this.$x;
+            }
+            private set clientX(clientX:number){
+                this.$x = clientX;
+            }
+            private get clientY(){
+                return this.$y;
+            }
+            private set clientY(clientY:number){
+                this.$y = clientY;
+            }
+            private $height:number = WRAP_CONTENT;
+
+            public get height():number{
+                return this.$height;
+            }
+            public set height(height:number){
+                this.$height = height;
+            }
+            private $width:number = WRAP_CONTENT;
+            public get width():number{
+                return this.$width
+            }
+            public set width(width:number){
+                this.$width = width;
+            }
+            private $children: Array<View> = [];
+            public get children():Array<View>{
+                return this.$children;
+            }
+            private $parent: View = null;
+            public get parent():View{
+                return this.$parent;
+            }
+
+            private $displayer:displayer.Displayer= null;
+            
+            public get displayer():displayer.Displayer{
+                return this.$displayer;
+            }
+            touchEnabled: boolean = false;
+
+            private $scaleX: number = 0;
+            private $scaleY: number = 0;
+
+            private $rotate: number = 0;
+
+            private $visibility:boolean = true;
+            public get visibility():boolean{
+                return this.$visibility;
+            }
+            public set visibility(visibility:boolean){
+                this.$visibility = visibility;
+            }
+
             constructor() {
                 super();
-                this._children = [];
-                this.x = 0;
-                this.y = 0;
-                this.pageX = 0;
-                this.pageY = 0;
-                this.touchEnabled = false;
-                this.rotate(0);
-                this.translate(0);
-                this.scale(1);
-                this._isAttached = false;
             }
-            path(canvasContext: CanvasRenderingContext2D): void {
+            $setParent(parent:View){
+                this.$parent = parent;
+            }
+
+            onMount():void{
 
             }
-            layout(canvasContext: CanvasRenderingContext2D): void {
-                this.onMeasure();
-                this.onLayout();
-                if (this.parent != null) {
-                    this.pageX = this.parent.pageX + this.x;
-                    this.pageY = this.parent.pageY + this.y;
-                }
-                this.draw(canvasContext);
-            }
-            onLayout(): void {
+            onUnmount():void{
 
             }
-            onMeasure(): void {
-
+            onLayout(t:number,r:number,b:number,l:number): void {
+                this.x = t;
+                this.y = b;
             }
-            draw(canvasContext: CanvasRenderingContext2D): void {
-                this.onDraw(canvasContext);
-                this.dispatchDraw(canvasContext);
+            onMeasure(ow:number,oh:number): void {
+                this.height = oh;
+                this.width = ow;
             }
             onDraw(canvasContext: CanvasRenderingContext2D): void {
-                canvasContext.beginPath();
-                canvasContext.closePath();
             }
-            dispatchDraw(canvasContext: CanvasRenderingContext2D): void {
-                var self = this;
-                this._children.forEach(function (child) {
-                    canvasContext.save();
-                    canvasContext.strokeStyle = 'transparent'
-                    canvasContext.beginPath();
-                    canvasContext.translate(child.x + child._translateX, child.y + child._translateY);
-                    canvasContext.translate(child._rotateX, child._rotateY);
-                    canvasContext.rotate(child._rotate);
-                    canvasContext.translate(child._rotateX, child._rotateY);
-                    canvasContext.scale(child._scaleX, child._scaleY);
-                    child.path(canvasContext);
-                    canvasContext.stroke();
-                    canvasContext.closePath();
-                    canvasContext.clip();
-                    child.layout(canvasContext);
-                    canvasContext.restore();
+            onSizeChanged(){
 
-                });
             }
-            onDispatchTouchEvent(event: TouchEvent) {
-                if (!this.touchEnabled) {
-                    if (this.parent != this && event.isPropagation) {
-                        this.parent.dispatchPropagationEvent(event)
-                    }
-                    return;
-                }
-                if (!this.dispatchTouchEvent(event)) {
-                    this.dispatchPropagationEvent(event);
-                }
-            }
+           
             dispatchTouchEvent(event: TouchEvent): boolean {
-                var { pageX, pageY } = event.touches[0];
-                for (let i = this._children.length - 1, children = this._children, child: IView; i >= 0; i--) {
-                    child = children[i];
-                    if (child.pageX < pageX &&
-                        (child.pageX + child.width) > pageX &&
-                        child.pageY < pageY &&
-                        (child.pageY + child.pageY) > pageY) {
-                        child.onDispatchTouchEvent(event);
-                        return true;
-                    }
-                }
+                // var { pageX, pageY } = event.touches[0];
+                // for (let i = this._children.length - 1, children = this._children, child: IView; i >= 0; i--) {
+                //     child = children[i];
+                //     if (child.pageX < pageX &&
+                //         (child.pageX + child.width) > pageX &&
+                //         child.pageY < pageY &&
+                //         (child.pageY + child.pageY) > pageY) {
+                //         child.onDispatchTouchEvent(event);
+                //         return true;
+                //     }
+                // }
                 return false;
             }
-            dispatchPropagationEvent(event: Event) {
-                event.target = this;
-                this.dispatchEvent(event.type, event);
-                if (this.parent != this && event.isPropagation) {
-                    this.parent.dispatchPropagationEvent(event)
-                }
-            }
-            addChild(child: IView): void {
-                if (child._isAttached) {
+            addChild(child:View): void {
+                if(child.parent){
                     throw new Error();
                 }
-                child.parent = this;
-                child._isAttached = true;
-                child.x = child.x || 0;
-                child.y = child.y || 0;
-                this._children.push(child);
+                child.$setParent(this);
+                this.$children.push(child);
+
             }
-            removeChild(child: IView): void {
-                for (let i = 0, children = this._children, l = children.length; i < l; i++) {
+            removeChild(child: View): void {
+                for (let i = 0, children = this.$children, l = children.length; i < l; i++) {
                     if (child == children[i]) {
-                        this._children.splice(i, 1);
+                        this.$children.splice(i, 1);
                         return;
                     }
                 }
             }
             scale(xy: number, y?: number): void {
-                this._scaleX = xy;
-                this._scaleY = y || xy;
+                this.$scaleX = xy;
+                this.$scaleY = y || xy;
             }
             rotate(rotate: number, x?: number, y?: number): void {
-                this._rotate = rotate;
-                this._rotateX = x || 0;
-                this._rotateY = y || 0;
-            }
-            translate(xy: number, y?: number): void {
-                this._translateX = xy;
-                this._translateY = y || xy;
+                // this.$rotate = rotate;
+                // this._rotateX = x || 0;
+                // this._rotateY = y || 0;
             }
         }
     }
