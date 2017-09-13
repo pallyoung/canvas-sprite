@@ -1,8 +1,8 @@
-'use strict'
 /**
  * https://dom.spec.whatwg.org/#dom-event-composed
  */
 /// <reference path="../time/Time.ts" />
+'use strict'
 
 namespace cs {
     export namespace event {

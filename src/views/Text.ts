@@ -1,5 +1,5 @@
-'use strict'
 /// <reference path="View.ts" />
+'use strict'
 
 namespace cs{
     export namespace view{

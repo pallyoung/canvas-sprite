@@ -1,7 +1,7 @@
-'use script'
-/// <reference path="../paint/Pianter.ts" />
+/// <reference path="./../paint/Painter.ts" />
 /// <reference path="../event/EventTarget.ts" />
 
+'use script'
 
 namespace cs {
     export namespace displayer{
