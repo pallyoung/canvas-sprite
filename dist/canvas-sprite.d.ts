@@ -267,6 +267,8 @@ declare namespace cs {
             private $verticalAlign;
             fontFamily: string;
             private $size;
+            private $lineCount;
+            private $rows;
             size: number;
             private $lineHeight;
             lineHeight: number;
