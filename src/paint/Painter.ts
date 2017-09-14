@@ -59,6 +59,8 @@ namespace cs{
                 // }
                 var right = left + view.width;
                 var bottom = top + view.height;
+                view.y = top;
+                view.x = left;
                 view.onLayout(top,left,right,bottom);
             }
             function draw(view:view.View,canvasContext:CanvasRenderingContext2D){

@@ -69,13 +69,15 @@ var cs;
                 layout(view, preWidth, preHeight);
             }
             function layout(view, preWidth, preHeight) {
-                var top = view.y;
+                var top = view.y || 0;
                 var left = view.x || 0;
-                if (top === undefined) {
-                    top = preHeight;
-                }
+                // if(top === undefined){
+                //     top = preHeight;
+                // }
                 var right = left + view.width;
                 var bottom = top + view.height;
+                view.y = top;
+                view.x = left;
                 view.onLayout(top, left, right, bottom);
             }
             function draw(view, canvasContext) {
@@ -707,7 +709,7 @@ var cs;
                         var parent = this.parent || this.displayer || { height: 0 };
                         return parent.height;
                     }
-                    return this.$width;
+                    return this.$height;
                 },
                 set: function (height) {
                     this.$height = height;
@@ -825,9 +827,71 @@ var cs;
         var Text = (function (_super) {
             __extends(Text, _super);
             function Text() {
-                return _super.call(this) || this;
+                var _this = _super.call(this) || this;
+                _this.$text = '';
+                _this.fontFamily = '';
+                _this.$size = 12;
+                return _this;
             }
-            Text.prototype.onDraw = function () {
+            Object.defineProperty(Text.prototype, "text", {
+                get: function () {
+                    return this.$text;
+                },
+                set: function (text) {
+                    this.$text = text;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Text.prototype, "size", {
+                get: function () {
+                    return this.$size;
+                },
+                set: function (size) {
+                    this.$size = size;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Text.prototype, "lineHeight", {
+                get: function () {
+                    return this.$lineHeight || this.size * 1.5;
+                },
+                set: function (lineHeight) {
+                    this.$lineHeight = lineHeight;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Text.prototype.onMeasure = function (ow, oh) {
+                var textWidth = this.measureText(this.text).width;
+                var textHeight = this.lineHeight;
+                if (this.$width === this.WRAP_CONTENT) {
+                    this.contentWidth = Math.max(this.contentWidth, textWidth);
+                    this.contentHeight = Math.max(this.contentHeight, textHeight);
+                }
+                else if (this.$height === this.WRAP_CONTENT) {
+                    var lineCount = textWidth / this.width;
+                    if (lineCount >= 1) {
+                        this.contentWidth = Math.max(this.contentWidth, this.width);
+                    }
+                    else {
+                        this.contentWidth = Math.max(this.contentWidth, textWidth);
+                    }
+                    textHeight = lineCount * textHeight;
+                }
+            };
+            Text.prototype.onDraw = function (canvasContext) {
+                canvasContext.textBaseline = 'top';
+                canvasContext.font = String(this.size) + 'px ' + this.fontFamily;
+                canvasContext.fillStyle = this.color;
+                canvasContext.fillText(this.text, 0, 0, this.contentWidth);
+            };
+            Text.prototype.measureText = function (text) {
+                var canvas = document.createElement('canvas');
+                var context = canvas.getContext('2d');
+                context.font = String(this.size) + 'px ' + this.fontFamily;
+                return context.measureText(text);
             };
             return Text;
         }(view.View));

@@ -47,7 +47,7 @@ namespace cs {
             private set clientY(clientY:number){
                 this.$y = clientY;
             }
-            private $height:number = WRAP_CONTENT;
+            protected $height:number = WRAP_CONTENT;
             
             public get height():number{
                 if(this.$height === WRAP_CONTENT){
@@ -56,13 +56,13 @@ namespace cs {
                     var parent = this.parent||this.displayer||{height:0};
                     return parent.height;
                 }
-                return this.$width;
+                return this.$height;
             }
             public set height(height:number){
                 this.$height = height;
             }
             
-            private $width:number = WRAP_CONTENT;
+            protected $width:number = WRAP_CONTENT;
             public get width():number{
                 if(this.$width === WRAP_CONTENT){
                     return this.contentWidth;

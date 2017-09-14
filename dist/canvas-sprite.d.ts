@@ -222,9 +222,9 @@ declare namespace cs {
             y: number;
             private clientX;
             private clientY;
-            private $height;
+            protected $height: number;
             height: number;
-            private $width;
+            protected $width: number;
             width: number;
             contentHeight: number;
             contentWidth: number;
@@ -260,8 +260,20 @@ declare namespace cs {
 declare namespace cs {
     namespace view {
         class Text extends View {
+            private $text;
+            text: string;
+            color: string;
+            private $textAlign;
+            private $verticalAlign;
+            fontFamily: string;
+            private $size;
+            size: number;
+            private $lineHeight;
+            lineHeight: number;
             constructor();
-            onDraw(): void;
+            onMeasure(ow: number, oh: number): void;
+            onDraw(canvasContext: CanvasRenderingContext2D): void;
+            measureText(text: string): TextMetrics;
         }
     }
 }
