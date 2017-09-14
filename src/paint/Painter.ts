@@ -52,11 +52,11 @@ namespace cs{
                 
             }
             function layout(view:view.View,preWidth:number,preHeight:number){
-                var top = view.y;
+                var top = view.y||0;
                 var left = view.x||0;
-                if(top === undefined){
-                    top = preHeight;
-                }
+                // if(top === undefined){
+                //     top = preHeight;
+                // }
                 var right = left + view.width;
                 var bottom = top + view.height;
                 view.onLayout(top,left,right,bottom);
