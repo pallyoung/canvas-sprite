@@ -21,6 +21,7 @@ namespace cs {
                 return WRAP_CONTENT;
             };
             private $x: number;
+            
             public set x(x:number){
                 this.$x = x;
             }
@@ -47,20 +48,39 @@ namespace cs {
                 this.$y = clientY;
             }
             private $height:number = WRAP_CONTENT;
-
+            
             public get height():number{
-                return this.$height;
+                if(this.$height === WRAP_CONTENT){
+                    return this.contentHeight;
+                }else if(this.$height ===MATCH_PARNET){
+                    var parent = this.parent||this.displayer||{height:0};
+                    return parent.height;
+                }
+                return this.$width;
             }
             public set height(height:number){
                 this.$height = height;
             }
+            
             private $width:number = WRAP_CONTENT;
             public get width():number{
-                return this.$width
+                if(this.$width === WRAP_CONTENT){
+                    return this.contentWidth;
+                }else if(this.$width ===MATCH_PARNET){
+                    var parent = this.parent||this.displayer||{width:0};
+                    return parent.width;
+                }
+                return this.$width;
             }
             public set width(width:number){
                 this.$width = width;
             }
+
+            public contentHeight:number = 0;
+
+            public contentWidth:number = 0;
+
+            
             private $children: Array<View> = [];
             public get children():Array<View>{
                 return this.$children;
@@ -77,11 +97,12 @@ namespace cs {
             }
             touchEnabled: boolean = false;
 
-            private $scaleX: number = 0;
-            private $scaleY: number = 0;
+            public scaleX: number = 1;
+            public scaleY: number = 1;
 
-            private $rotate: number = 0;
-
+            public rotate: number = 0;
+            public originX: number = 0;
+            public originY: number = 0;
             private $visibility:boolean = true;
             public get visibility():boolean{
                 return this.$visibility;
@@ -104,19 +125,18 @@ namespace cs {
 
             }
             onLayout(t:number,r:number,b:number,l:number): void {
-                this.x = t;
-                this.y = b;
-                console.log('onlayout')
+
             }
             onMeasure(ow:number,oh:number): void {
-                this.height = oh;
-                this.width = ow;
-                console.log('measure')
+
             }
             onDraw(canvasContext: CanvasRenderingContext2D): void {
-                canvasContext.fillStyle = this.backgroundColor;
-                canvasContext.fillRect(0,0,this.width,this.height);
-                console.log('draw')
+                //背景
+                if(this.$width!==WRAP_CONTENT){
+                    canvasContext.fillStyle = this.backgroundColor||'transparent';
+                    canvasContext.fillRect(0,0,this.width,this.height);
+                }
+                //border
             }
             onSizeChanged(){
 
@@ -151,15 +171,6 @@ namespace cs {
                         return;
                     }
                 }
-            }
-            scale(xy: number, y?: number): void {
-                this.$scaleX = xy;
-                this.$scaleY = y || xy;
-            }
-            rotate(rotate: number, x?: number, y?: number): void {
-                // this.$rotate = rotate;
-                // this._rotateX = x || 0;
-                // this._rotateY = y || 0;
             }
         }
     }

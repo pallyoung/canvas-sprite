@@ -48,7 +48,9 @@
         black.y = 50;
         red.addChild(blue)
         blue.addChild(black);
-       // requestAnimationFrame(function(time){black.rotate(time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
+        black.originY = black.height/2
+        black.originX = black.width/2
+       requestAnimationFrame(function(time){black.rotate = (time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
     </script>
 </body>
 </html>

@@ -60,7 +60,7 @@ namespace cs {
 
             }
             onCreate(){
-
+                this.$container.appendChild(this.$canvas);
             }
             public setContentView(view:view.View):void{
                 this.$children = [view];

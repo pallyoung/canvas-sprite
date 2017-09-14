@@ -11,7 +11,8 @@ namespace cs{
                 var context = displayer.canvasContext;
                 child = children[0];
                 measure(child,0,0);
-                draw(child,displayer.canvasContext);
+                context.clearRect(0,0,displayer.width,displayer.height);
+                draw(child,context);
             }
             function setHeight(view:view.View,childrenHeight:number){
                 if(view.height === view.WRAP_CONTENT){
@@ -36,39 +37,49 @@ namespace cs{
             function measure(view:view.View,preWidth:number,preHeight:number){
                 var children = view.children;
                 var i = 0,l = children.length,child:view.View;
-                var childrenHeight = 0,childrenWidth = 0;
+                var contentHeight = 0,contentWidth = 0;
                 while (i<l) {
                     child = children[i];
-                    measure(child,childrenWidth,childrenHeight);
-                    childrenHeight = Math.max(child.height+child.y,childrenHeight);
-                    childrenWidth = Math.max(child.width+child.x,childrenWidth);
+                    measure(child,contentHeight,contentWidth);
+                    contentHeight = Math.max(child.height+child.y,contentHeight);
+                    contentWidth = Math.max(child.width+child.x,contentWidth);
                     i++;
                 }
-                setHeight(view,childrenHeight);
-                setWidth(view,childrenWidth);   
+                view.contentHeight = contentHeight;
+                view.contentWidth = contentWidth;
                 view.onMeasure(view.width,view.height);
                 layout(view,preWidth,preHeight);                    
                 
             }
             function layout(view:view.View,preWidth:number,preHeight:number){
                 var top = view.y;
-                var left = view.x;
+                var left = view.x||0;
                 if(top === undefined){
                     top = preHeight;
-                }
-                if(left === undefined){
-                    left = preWidth;
                 }
                 var right = left + view.width;
                 var bottom = top + view.height;
                 view.onLayout(top,left,right,bottom);
             }
             function draw(view:view.View,canvasContext:CanvasRenderingContext2D){
+                //判断是否可见
+                if(!view.visibility){
+                    return;
+                }
                 canvasContext.save();
                 canvasContext.strokeStyle = 'transparent';
-                canvasContext.fillStyle = 'transparent';
                 canvasContext.beginPath();
                 canvasContext.translate(view.x, view.y);
+                //缩放
+                canvasContext.scale(view.scaleX,view.scaleY);
+
+                //旋转
+                canvasContext.translate(view.originX,view.originY);
+                canvasContext.rotate(view.rotate);
+                canvasContext.translate(-view.originX,-view.originY);
+
+                //设置绘制上下文
+                canvasContext.rect(0,0,view.width,view.height);
                 canvasContext.stroke();
                 canvasContext.closePath();
                 canvasContext.clip();

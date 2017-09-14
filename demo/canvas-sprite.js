@@ -26,7 +26,8 @@ var cs;
                 var context = displayer.canvasContext;
                 child = children[0];
                 measure(child, 0, 0);
-                draw(child, displayer.canvasContext);
+                context.clearRect(0, 0, displayer.width, displayer.height);
+                draw(child, context);
             }
             Painter.paint = paint;
             function setHeight(view, childrenHeight) {
@@ -54,38 +55,46 @@ var cs;
             function measure(view, preWidth, preHeight) {
                 var children = view.children;
                 var i = 0, l = children.length, child;
-                var childrenHeight = 0, childrenWidth = 0;
+                var contentHeight = 0, contentWidth = 0;
                 while (i < l) {
                     child = children[i];
-                    measure(child, childrenWidth, childrenHeight);
-                    childrenHeight = Math.max(child.height + child.y, childrenHeight);
-                    childrenWidth = Math.max(child.width + child.x, childrenWidth);
+                    measure(child, contentHeight, contentWidth);
+                    contentHeight = Math.max(child.height + child.y, contentHeight);
+                    contentWidth = Math.max(child.width + child.x, contentWidth);
                     i++;
                 }
-                setHeight(view, childrenHeight);
-                setWidth(view, childrenWidth);
+                view.contentHeight = contentHeight;
+                view.contentWidth = contentWidth;
                 view.onMeasure(view.width, view.height);
                 layout(view, preWidth, preHeight);
             }
             function layout(view, preWidth, preHeight) {
                 var top = view.y;
-                var left = view.x;
+                var left = view.x || 0;
                 if (top === undefined) {
                     top = preHeight;
-                }
-                if (left === undefined) {
-                    left = preWidth;
                 }
                 var right = left + view.width;
                 var bottom = top + view.height;
                 view.onLayout(top, left, right, bottom);
             }
             function draw(view, canvasContext) {
+                //判断是否可见
+                if (!view.visibility) {
+                    return;
+                }
                 canvasContext.save();
                 canvasContext.strokeStyle = 'transparent';
-                canvasContext.fillStyle = 'transparent';
                 canvasContext.beginPath();
                 canvasContext.translate(view.x, view.y);
+                //缩放
+                canvasContext.scale(view.scaleX, view.scaleY);
+                //旋转
+                canvasContext.translate(view.originX, view.originY);
+                canvasContext.rotate(view.rotate);
+                canvasContext.translate(-view.originX, -view.originY);
+                //设置绘制上下文
+                canvasContext.rect(0, 0, view.width, view.height);
                 canvasContext.stroke();
                 canvasContext.closePath();
                 canvasContext.clip();
@@ -319,6 +328,7 @@ var cs;
                 configurable: true
             });
             Displayer.prototype.onCreate = function () {
+                this.$container.appendChild(this.$canvas);
             };
             Displayer.prototype.setContentView = function (view) {
                 this.$children = [view];
@@ -618,13 +628,17 @@ var cs;
                 var _this = _super.call(this) || this;
                 _this.$height = WRAP_CONTENT;
                 _this.$width = WRAP_CONTENT;
+                _this.contentHeight = 0;
+                _this.contentWidth = 0;
                 _this.$children = [];
                 _this.$parent = null;
                 _this.$displayer = null;
                 _this.touchEnabled = false;
-                _this.$scaleX = 0;
-                _this.$scaleY = 0;
-                _this.$rotate = 0;
+                _this.scaleX = 1;
+                _this.scaleY = 1;
+                _this.rotate = 0;
+                _this.originX = 0;
+                _this.originY = 0;
                 _this.$visibility = true;
                 return _this;
             }
@@ -686,7 +700,14 @@ var cs;
             });
             Object.defineProperty(View.prototype, "height", {
                 get: function () {
-                    return this.$height;
+                    if (this.$height === WRAP_CONTENT) {
+                        return this.contentHeight;
+                    }
+                    else if (this.$height === MATCH_PARNET) {
+                        var parent = this.parent || this.displayer || { height: 0 };
+                        return parent.height;
+                    }
+                    return this.$width;
                 },
                 set: function (height) {
                     this.$height = height;
@@ -696,6 +717,13 @@ var cs;
             });
             Object.defineProperty(View.prototype, "width", {
                 get: function () {
+                    if (this.$width === WRAP_CONTENT) {
+                        return this.contentWidth;
+                    }
+                    else if (this.$width === MATCH_PARNET) {
+                        var parent = this.parent || this.displayer || { width: 0 };
+                        return parent.width;
+                    }
                     return this.$width;
                 },
                 set: function (width) {
@@ -743,19 +771,16 @@ var cs;
             View.prototype.onUnmount = function () {
             };
             View.prototype.onLayout = function (t, r, b, l) {
-                this.x = t;
-                this.y = b;
-                console.log('onlayout');
             };
             View.prototype.onMeasure = function (ow, oh) {
-                this.height = oh;
-                this.width = ow;
-                console.log('measure');
             };
             View.prototype.onDraw = function (canvasContext) {
-                canvasContext.fillStyle = this.backgroundColor;
-                canvasContext.fillRect(0, 0, this.width, this.height);
-                console.log('draw');
+                //背景
+                if (this.$width !== WRAP_CONTENT) {
+                    canvasContext.fillStyle = this.backgroundColor || 'transparent';
+                    canvasContext.fillRect(0, 0, this.width, this.height);
+                }
+                //border
             };
             View.prototype.onSizeChanged = function () {
             };
@@ -787,15 +812,6 @@ var cs;
                         return;
                     }
                 }
-            };
-            View.prototype.scale = function (xy, y) {
-                this.$scaleX = xy;
-                this.$scaleY = y || xy;
-            };
-            View.prototype.rotate = function (rotate, x, y) {
-                // this.$rotate = rotate;
-                // this._rotateX = x || 0;
-                // this._rotateY = y || 0;
             };
             return View;
         }(cs.event.EventTarget));

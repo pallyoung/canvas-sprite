@@ -226,6 +226,8 @@ declare namespace cs {
             height: number;
             private $width;
             width: number;
+            contentHeight: number;
+            contentWidth: number;
             private $children;
             readonly children: Array<View>;
             private $parent;
@@ -234,9 +236,11 @@ declare namespace cs {
             private $displayer;
             readonly displayer: displayer.Displayer;
             touchEnabled: boolean;
-            private $scaleX;
-            private $scaleY;
-            private $rotate;
+            scaleX: number;
+            scaleY: number;
+            rotate: number;
+            originX: number;
+            originY: number;
             private $visibility;
             visibility: boolean;
             constructor();
@@ -250,8 +254,6 @@ declare namespace cs {
             dispatchTouchEvent(event: TouchEvent): boolean;
             addChild(child: View): void;
             removeChild(child: View): void;
-            scale(xy: number, y?: number): void;
-            rotate(rotate: number, x?: number, y?: number): void;
         }
     }
 }
