@@ -3,7 +3,7 @@
 
 namespace cs {
     export namespace view {
-        export class Text extends View {
+        export class TextView extends View {
 
             private $text: string = '';
             public get text(): string {
