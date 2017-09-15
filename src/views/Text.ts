@@ -13,9 +13,12 @@ namespace cs {
                 this.$text = text;
             }
             public color: string|CanvasGradient;
+            public strokeColor:string|CanvasGradient = 'transparent';
+            public strokeWidth:number = 0;
+            public bold:boolean = false;
             private $textAlign: string;
             private $verticalAlign: string;
-            public fontFamily: string = '';
+            public fontFamily: string = 'sans-serif';
             private $size: number = 12;
             private $lineCount:number = 0;
             private $rows:string[] = [];
@@ -84,8 +87,11 @@ namespace cs {
                 canvasContext.textBaseline = 'middle';
                 canvasContext.font = String(this.size) + 'px ' + this.fontFamily;
                 canvasContext.fillStyle = this.color;
+                canvasContext.lineWidth = this.strokeWidth;
+                canvasContext.strokeStyle = this.strokeColor;
                 for(var i = 0,l = this.$rows.length;i<l;i++){
-                    canvasContext.fillText(this.$rows[i],0,this.lineHeight/2+i*this.lineHeight);                     
+                    canvasContext.fillText(this.$rows[i],0,this.lineHeight/2+i*this.lineHeight); 
+                    canvasContext.strokeText(this.$rows[i],0,this.lineHeight/2+i*this.lineHeight);                      
                 }
 
             }
