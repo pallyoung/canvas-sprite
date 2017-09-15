@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "./node_modules/.bin/webpack-dev-server --env=dev",
     "tsc": "tsc",
-    "test": "gulp test"
+    "test": "gulp test",
+    "release":"gulp release",
+    "publish":"gulp publish"
   },
   "repository": {
     "type": "git",
