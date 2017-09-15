@@ -1,4 +1,7 @@
-'use strict';
+(function (factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : window.cs = factory();
+})(function factory() {
+    'use strict';
 /// <reference path="./../paint/Painter.ts" />
 /// <reference path="../event/EventTarget.ts" />
 'use script';
@@ -931,3 +934,6 @@ var cs;
         view.Text = Text;
     })(view = cs.view || (cs.view = {}));
 })(cs || (cs = {}));
+
+    return cs;
+})

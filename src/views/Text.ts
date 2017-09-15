@@ -12,7 +12,7 @@ namespace cs {
             public set text(text: string) {
                 this.$text = text;
             }
-            public color: string;
+            public color: string|CanvasGradient;
             private $textAlign: string;
             private $verticalAlign: string;
             public fontFamily: string = '';

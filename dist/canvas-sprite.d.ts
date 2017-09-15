@@ -232,7 +232,7 @@ declare namespace cs {
             readonly children: Array<View>;
             private $parent;
             readonly parent: View;
-            backgroundColor: string;
+            backgroundColor: string | CanvasGradient;
             private $displayer;
             readonly displayer: displayer.Displayer;
             touchEnabled: boolean;
@@ -262,7 +262,7 @@ declare namespace cs {
         class Text extends View {
             private $text;
             text: string;
-            color: string;
+            color: string | CanvasGradient;
             private $textAlign;
             private $verticalAlign;
             fontFamily: string;

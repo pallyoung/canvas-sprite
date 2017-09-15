@@ -89,7 +89,7 @@ namespace cs {
             public get parent():View{
                 return this.$parent;
             }
-            backgroundColor:string;
+            backgroundColor:string|CanvasGradient;
             private $displayer:displayer.Displayer= null;
             
             public get displayer():displayer.Displayer{

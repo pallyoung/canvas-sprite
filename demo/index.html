@@ -51,12 +51,15 @@
         black.originY = black.height/2
         black.originX = black.width/2;
         var text = new cs.view.Text();
-        text.text = '中华人民共和国万岁';
-        text.width = 30
-        text.color = 'black'
-        text.backgroundColor = 'black'
+        text.text = '你好，色彩！！';
+        text.lineHeight = 0
+        text.width = 60
+        text.color = '#4433ee'
         red.addChild(text);
-       requestAnimationFrame(function(time){black.rotate = (time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
+       //requestAnimationFrame(function(time){black.rotate = (time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
+       //requestAnimationFrame(function(time){text.rotate = (time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
+       //requestAnimationFrame(function(time){blue.rotate = (time/1000%1*2*Math.PI);requestAnimationFrame(arguments.callee)})
+
     </script>
 </body>
 </html>
