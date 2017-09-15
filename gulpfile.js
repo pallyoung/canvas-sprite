@@ -8,6 +8,7 @@ gulp.task('release',function(){
     sh.rm('-rf','dist');
     sh.exec('tsc');
     pack('dist/canvas-sprite.js','dist/canvas-sprite.js');
+    min('dist/canvas-sprite.js','dist/canvas-sprite-min.js');
 });
 gulp.task('publish',function(){
 
@@ -20,6 +21,12 @@ gulp.task('test',function(){
     sh.mv('dist/canvas-sprite.js','demo/canvas-sprite.js')
 });
 
+function min(path,dist){
+    gulp.src(path)
+    .pipe(uglify())
+    .pipe(rename(dist))
+    .pipe(gulp.dest('./'))
+}
 function pack(path,dist){
     var data = fs.readFileSync(path,'utf-8').toString();
     var umd = fs.readFileSync('umd.js','utf-8').toString();
